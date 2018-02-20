@@ -22,10 +22,7 @@ namespace ImportDataConsole
         static void Main(string[] args)
         {
             var arrayBytes = File.ReadAllBytes("C:/ImportExcel/test.xlsx");
-            var test = new Test();
-            var result = test.GetColumnAttrName("IDENTIFICADOR");
-            var result2 = test.GetColumnAttrName("VALOR");
-            var result3 = test.GetColumnAttrName("test");
+
             var resultExcel = ExcelHelper.ExcelHelper.Import<Test>(arrayBytes);
         }
     }

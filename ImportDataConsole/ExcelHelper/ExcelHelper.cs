@@ -21,7 +21,6 @@ namespace ImportDataConsole.ExcelHelper
             {
                 var workSheet = workBook.Worksheets.FirstOrDefault();
                 var rowHeader = workSheet.Row(numRowHeader);
-                var allColumns = rowHeader.CellsUsed().Select(item => item.Value.ToString()).ToList();
 
                 workSheet.Rows(rowHeader.RowNumber() + 1, workSheet.LastRowUsed().RowNumber())
                 .ForEach(row => {
@@ -29,9 +28,10 @@ namespace ImportDataConsole.ExcelHelper
 
                     row.Cells(1, row.LastCellUsed().Address.ColumnNumber)
                     .ForEach(cell => {
-                        var propName = item.GetColumnAttrName(allColumns[cell.Address.ColumnNumber - 1]);
+                        var cellHeader = workSheet.Cell(numRowHeader, cell.Address.ColumnNumber);
+                        var propName = item.GetColumnAttrName(cellHeader.Value.ToString());
 
-                        if (propName != null && !cell.IsEmpty())
+                        if (!cell.IsEmpty() && propName != null)
                         {
                             var prop = typeof(TResult).GetProperty(propName);
                             prop?.SetValue(item, Convert.ChangeType(cell.Value, prop.PropertyType));
