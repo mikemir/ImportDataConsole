@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using ImportDataConsole.ExcelHelper.Entities;
 using ImportDataConsole.ExcelHelper.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,27 @@ namespace ImportDataConsole.ExcelHelper
 {
     public static class ExcelHelper
     {
-        public static IEnumerable<TResult> Import<TResult>(byte[] data, int numRowHeader = 1) where TResult : new()
+        public static byte[] Export<TData>(IEnumerable<ExportExcel<TData>> data) where TData : class, new()
         {
-            var result = new List<TResult>();
+            var ms = new MemoryStream();
+
+            using (var workbook = new XLWorkbook())
+            {
+                foreach (var hoja in data)
+                {
+
+                }
+
+                workbook.SaveAs(ms);
+            }
+
+            return ms.ToArray();
+        }
+
+        public static IEnumerable<ImportExcel<TResult>> Import<TResult>(byte[] data, int numRowHeader = 1) where TResult : class, new()
+        {
             var numRowData = numRowHeader + 1;
+            var result = new List<ImportExcel<TResult>>();
 
             using (var workBook = new XLWorkbook(new MemoryStream(data)))
             {
@@ -24,22 +42,22 @@ namespace ImportDataConsole.ExcelHelper
 
                 workSheet.Rows(rowHeader.RowNumber() + 1, workSheet.LastRowUsed().RowNumber())
                 .ForEach(row => {
-                    var item = new TResult();
+                    var itemImport = new ImportExcel<TResult>();
 
                     row.Cells(1, row.LastCellUsed().Address.ColumnNumber)
                     .ForEach(cell => {
                         var cellHeader = workSheet.Cell(numRowHeader, cell.Address.ColumnNumber);
-                        var propName = item.GetColumnAttrName(cellHeader.Value.ToString());
+                        var propName = itemImport.Item.GetColumnAttrName(cellHeader.Value.ToString());
 
                         if (!cell.IsEmpty() && propName != null)
                         {
                             var prop = typeof(TResult).GetProperty(propName);
-                            prop?.SetValue(item, Convert.ChangeType(cell.Value, prop.PropertyType));
+                            prop?.SetValue(itemImport.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
                         }
 
                     });
 
-                    result.Add(item);
+                    result.Add(itemImport);
                     numRowData++;
                 });
             }

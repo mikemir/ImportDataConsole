@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExcelHelper\Attributes\ColumnName.cs" />
+    <Compile Include="ExcelHelper\Entities\ExportExcel.cs" />
+    <Compile Include="ExcelHelper\Entities\ImportExcel.cs" />
     <Compile Include="ExcelHelper\ExcelHelper.cs" />
     <Compile Include="ExcelHelper\Extensions\ExcelExtensions.cs" />
     <Compile Include="Program.cs" />
