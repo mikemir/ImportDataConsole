@@ -17,19 +17,6 @@ namespace ImportDataConsole
         public string Nombre { get; set; }
     }
 
-    public class Reintegro
-    {
-        public string Nup { get; set; }
-        public string  Solicitud { get; set; }
-        public string Expediente { get; set; }
-        public string Afiliado { get; set; }
-        public string Beneficiario { get; set; }
-        public string Parentesco { get; set; }
-        public string TipoReintegro { get; set; }
-        public string MontoReintegro { get; set; }
-        public string Comentario { get; set; }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -40,7 +27,6 @@ namespace ImportDataConsole
             var result2 = test.GetColumnAttrName("VALOR");
             var result3 = test.GetColumnAttrName("test");
             var resultExcel = ExcelHelper.ExcelHelper.Import<Test>(arrayBytes);
-            //var result2 = ExcelHelper.ExcelHelper.Import<Reintegro>(arrayBytes);
         }
     }
 }
