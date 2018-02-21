@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImportDataConsole.Excel.Attributes
 {
-    public class ColumnNameAttribute : Attribute
+    public class ExportDisplayAttribute : Attribute
     {
         public int Order { get; set; }
         public string Name { get; set; }

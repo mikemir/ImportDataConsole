@@ -15,6 +15,7 @@ namespace ImportDataConsole.Excel
 {
     public static class ExcelHelper
     {
+        #region EXPORT
         public static byte[] Export<T>(IEnumerable<ExportExcel<T>> data) where T : class, new()
         {
             var ms = new MemoryStream();
@@ -61,7 +62,7 @@ namespace ImportDataConsole.Excel
                 detProps.ForEach(p =>
                 {
                     var cell = worksheet.Cell(row, col++);
-                    DrawDataCell(cell, p.Value.GetValue(item), p.Value.GetCustomAttribute<ColumnNameAttribute>());
+                    DrawDataCell(cell, p.Value.GetValue(item), p.Value.GetCustomAttribute<ExportDisplayAttribute>());
                 });
             });
 
@@ -85,12 +86,12 @@ namespace ImportDataConsole.Excel
                 throw new ArgumentNullException(nameof(genericType));
 
             var columnList = genericType.GetProperties()
-                .Where(prop => prop.GetAttribute<ColumnNameAttribute>() != null && visibleColummns == null ||
-                               prop.GetAttribute<ColumnNameAttribute>() != null && visibleColummns.Contains(prop.Name))
+                .Where(prop => prop.GetAttribute<ExportDisplayAttribute>() != null && visibleColummns == null ||
+                               prop.GetAttribute<ExportDisplayAttribute>() != null && visibleColummns.Contains(prop.Name))
                 .Select(prop =>
                     new
                     {
-                        Attribute = prop.GetCustomAttribute<ColumnNameAttribute>(),
+                        Attribute = prop.GetCustomAttribute<ExportDisplayAttribute>(),
                         PropertyInfo = prop
                     }
                 )
@@ -112,7 +113,7 @@ namespace ImportDataConsole.Excel
             cell.SetValue(value);
         }
 
-        private static void DrawDataCell(IXLCell cell, object value, ColumnNameAttribute attribute)
+        private static void DrawDataCell(IXLCell cell, object value, ExportDisplayAttribute attribute)
         {
             cell.Style.Border.OutsideBorder = attribute.Border ? XLBorderStyleValues.Thin : XLBorderStyleValues.None;
             if (attribute.NumberFormat != null) cell.Style.NumberFormat.SetFormat(attribute.NumberFormat);
@@ -123,7 +124,9 @@ namespace ImportDataConsole.Excel
 
             cell.Value = value;
         }
+        #endregion
 
+        #region IMPORT
         private static ImportExcel<T> ValidateCell<T>(string cellHeader, IXLCell cell, ImportExcel<T> importContent) where T : class, new()
         {
             var valid = true;
@@ -177,5 +180,6 @@ namespace ImportDataConsole.Excel
 
             return result;
         }
+        #endregion
     }
 }

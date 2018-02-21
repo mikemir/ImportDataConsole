@@ -13,9 +13,9 @@ namespace ImportDataConsole
 {
     public class Test
     {
-        [ColumnName(Name = "IDENTIFICADOR")]
+        [ExportDisplay(Name = "IDENTIFICADOR")]
         public int Id { get; set; }
-        [ColumnName(Name = "VALOR")]
+        [ExportDisplay(Name = "VALOR")]
         public string Nombre { get; set; }
     }
 

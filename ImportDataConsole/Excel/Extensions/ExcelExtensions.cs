@@ -24,13 +24,13 @@ namespace ImportDataConsole.Excel.Extensions
             return memberExpresion != null ? obj.GetType().GetProperty(memberExpresion.Member.Name) : null;
         }
 
-        public static string GetPropertyNameByColumnAttr(this object item, string name)
+        public static string GetPropertyNameByColumnAttr(this object item, string columnName)
         {
             var result = item.GetType()
                 .GetProperties()
-                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ColumnNameAttribute)))
-                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ColumnNameAttribute) as ColumnNameAttribute })
-                .SingleOrDefault(col => col.Attr.Name == name);
+                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ImportValidationAttribute)))
+                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ImportValidationAttribute) as ImportValidationAttribute })
+                .SingleOrDefault(col => col.Attr.ColumnName == columnName);
 
             return result?.Prop.Name;
         }

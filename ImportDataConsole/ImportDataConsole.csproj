@@ -41,6 +41,7 @@
       <HintPath>..\libs\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,7 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Excel\Attributes\ColumnName.cs" />
+    <Compile Include="Excel\Attributes\ExportDisplayAttribute.cs" />
+    <Compile Include="Excel\Attributes\ImportValidationAttribute.cs" />
     <Compile Include="Excel\Entities\ExportExcel.cs" />
     <Compile Include="Excel\Entities\ImportExcel.cs" />
     <Compile Include="Excel\ExcelHelper.cs" />
