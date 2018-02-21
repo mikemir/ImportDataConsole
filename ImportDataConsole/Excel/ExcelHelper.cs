@@ -134,16 +134,20 @@ namespace ImportDataConsole.Excel
 
             if (propName != null)
             {
-                if (!cell.IsEmpty())
-                {
-                    var prop = typeof(T).GetProperty(propName);
-                    prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
-                }
-                else
-                {
-                    importContent.ValidationMessage = $"Error[{cell.Address.ColumnLetter}:{cell.Address.RowNumber}]: La columna {cellHeader} está vacia.";
-                    valid = false;
-                }
+                var prop = typeof(T).GetProperty(propName);
+                var validations = prop.GetAttributes<ImportValidationAttribute>();
+
+                validations.ForEach(val => {
+                    if (val.IsValid(cell, cellHeader))
+                    {
+                        prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
+                    }
+                    else
+                    {
+                        importContent.ValidationMessage = val.ErrorMessage;
+                        valid = false;
+                    }
+                });
             }
 
             importContent.IsValid = importContent.IsValid && valid;

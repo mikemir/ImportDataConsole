@@ -16,6 +16,11 @@ namespace ImportDataConsole.Excel.Extensions
             return obj.GetCustomAttributes(true).FirstOrDefault(param => param is T) as T;
         }
 
+        public static IEnumerable<T> GetAttributes<T>(this MemberInfo obj) where T : class
+        {
+            return obj.GetCustomAttributes(true).Where(param => param is T).Select(item => item as T).ToList();
+        }
+
         public static MemberInfo GetPropertyInfo<T>(this T obj, Expression<Func<T, object>> expression)
         {
             var uniExpresion = expression.Body as UnaryExpression;
@@ -28,8 +33,8 @@ namespace ImportDataConsole.Excel.Extensions
         {
             var result = item.GetType()
                 .GetProperties()
-                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ImportValidationAttribute)))
-                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ImportValidationAttribute) as ImportValidationAttribute })
+                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ImportDisplayAttribute)))
+                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ImportDisplayAttribute) as ImportDisplayAttribute })
                 .SingleOrDefault(col => col.Attr.ColumnName == columnName);
 
             return result?.Prop.Name;

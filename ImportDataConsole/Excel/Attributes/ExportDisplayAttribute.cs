@@ -8,6 +8,11 @@ namespace ImportDataConsole.Excel.Attributes
 {
     public class ExportDisplayAttribute : Attribute
     {
+        public ExportDisplayAttribute(string name)
+        {
+            Name = name;
+        }
+
         public int Order { get; set; }
         public string Name { get; set; }
         public bool Border { get; set; }

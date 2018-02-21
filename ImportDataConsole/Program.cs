@@ -1,6 +1,7 @@
 ﻿using ImportDataConsole.Excel;
 using ImportDataConsole.Excel.Attributes;
 using ImportDataConsole.Excel.Extensions;
+using ImportDataConsole.Utils.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,9 +14,11 @@ namespace ImportDataConsole
 {
     public class Test
     {
-        [ExportDisplay(Name = "IDENTIFICADOR")]
+        [ExportDisplay("IDENTIFICADOR")]
+        [ImportDisplay("IDENTIFICADOR")]
         public int Id { get; set; }
-        [ExportDisplay(Name = "VALOR")]
+        [ExportDisplay("VALOR")]
+        [ImportDisplay("VALOR"), ColumnRequired()]
         public string Nombre { get; set; }
     }
 
