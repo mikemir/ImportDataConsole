@@ -1,11 +1,11 @@
-﻿using ImportDataConsole.ExcelHelper.Attributes;
+﻿using ImportDataConsole.Excel.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImportDataConsole.ExcelHelper.Extensions
+namespace ImportDataConsole.Excel.Extensions
 {
     public static class ExcelExtensions
     {

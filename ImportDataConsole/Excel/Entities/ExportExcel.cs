@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImportDataConsole.ExcelHelper.Entities
+namespace ImportDataConsole.Excel.Entities
 {
     public class ExportExcel<TData> where TData : class, new()
     {

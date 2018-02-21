@@ -1,5 +1,5 @@
-﻿using ImportDataConsole.ExcelHelper.Attributes;
-using ImportDataConsole.ExcelHelper.Extensions;
+﻿using ImportDataConsole.Excel;
+using ImportDataConsole.Excel.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +23,7 @@ namespace ImportDataConsole
         {
             var arrayBytes = File.ReadAllBytes("C:/ImportExcel/test.xlsx");
 
-            var resultExcel = ExcelHelper.ExcelHelper.Import<Test>(arrayBytes);
+            var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
         }
     }
 }

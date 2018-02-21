@@ -1,6 +1,6 @@
 ﻿using ClosedXML.Excel;
-using ImportDataConsole.ExcelHelper.Entities;
-using ImportDataConsole.ExcelHelper.Extensions;
+using ImportDataConsole.Excel.Entities;
+using ImportDataConsole.Excel.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImportDataConsole.ExcelHelper
+namespace ImportDataConsole.Excel
 {
     public static class ExcelHelper
     {
@@ -28,6 +28,15 @@ namespace ImportDataConsole.ExcelHelper
             }
 
             return ms.ToArray();
+        }
+
+        private static ImportExcel<TItem> Validate<TItem>() where TItem : class, new()
+        {
+            ImportExcel<TItem> result = new ImportExcel<TItem>();
+
+
+
+            return result;
         }
 
         public static IEnumerable<ImportExcel<TResult>> Import<TResult>(byte[] data, int numRowHeader = 1) where TResult : class, new()
