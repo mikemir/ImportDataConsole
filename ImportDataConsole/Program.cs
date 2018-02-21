@@ -1,5 +1,6 @@
 ﻿using ImportDataConsole.Excel;
 using ImportDataConsole.Excel.Attributes;
+using ImportDataConsole.Excel.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,8 @@ namespace ImportDataConsole
         static void Main(string[] args)
         {
             var arrayBytes = File.ReadAllBytes("C:/ImportExcel/test.xlsx");
+            var test = new Test { Id = 1, Nombre = "Michael " };
+            var prop = test.GetPropertyInfo(item => item.Id).GetAttribute<ColumnName>();
 
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
         }

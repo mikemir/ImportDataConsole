@@ -13,7 +13,7 @@ namespace ImportDataConsole.Excel
 {
     public static class ExcelHelper
     {
-        public static byte[] Export<TData>(IEnumerable<ExportExcel<TData>> data) where TData : class, new()
+        public static byte[] Export<T>(IEnumerable<ExportExcel<T>> data) where T : class, new()
         {
             var ms = new MemoryStream();
 
@@ -30,19 +30,34 @@ namespace ImportDataConsole.Excel
             return ms.ToArray();
         }
 
-        private static ImportExcel<TItem> Validate<TItem>() where TItem : class, new()
+        private static ImportExcel<T> ValidateCell<T>(string cellHeader, IXLCell cell, ImportExcel<T> importContent) where T : class, new()
         {
-            ImportExcel<TItem> result = new ImportExcel<TItem>();
+            var valid = true;
+            var propName = importContent.Item.GetPropertyNameByColumnAttr(cellHeader);
 
+            if (propName != null)
+            {
+                if (!cell.IsEmpty())
+                {
+                    var prop = typeof(T).GetProperty(propName);
+                    prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
+                }
+                else
+                {
+                    importContent.ValidationMessage = $"Error[{cell.Address.ColumnLetter}:{cell.Address.RowNumber}]: La columna {cellHeader} está vacia.";
+                    valid = false;
+                }
+            }
 
+            importContent.IsValid = importContent.IsValid && valid;
 
-            return result;
+            return importContent;
         }
 
-        public static IEnumerable<ImportExcel<TResult>> Import<TResult>(byte[] data, int numRowHeader = 1) where TResult : class, new()
+        public static IEnumerable<ImportExcel<T>> Import<T>(byte[] data, int numRowHeader = 1) where T : class, new()
         {
             var numRowData = numRowHeader + 1;
-            var result = new List<ImportExcel<TResult>>();
+            var result = new List<ImportExcel<T>>();
 
             using (var workBook = new XLWorkbook(new MemoryStream(data)))
             {
@@ -51,18 +66,13 @@ namespace ImportDataConsole.Excel
 
                 workSheet.Rows(rowHeader.RowNumber() + 1, workSheet.LastRowUsed().RowNumber())
                 .ForEach(row => {
-                    var itemImport = new ImportExcel<TResult>();
+                    var itemImport = new ImportExcel<T>();
 
                     row.Cells(1, row.LastCellUsed().Address.ColumnNumber)
                     .ForEach(cell => {
-                        var cellHeader = workSheet.Cell(numRowHeader, cell.Address.ColumnNumber);
-                        var propName = itemImport.Item.GetColumnAttrName(cellHeader.Value.ToString());
 
-                        if (!cell.IsEmpty() && propName != null)
-                        {
-                            var prop = typeof(TResult).GetProperty(propName);
-                            prop?.SetValue(itemImport.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
-                        }
+                        var cellHeader = workSheet.Cell(numRowHeader, cell.Address.ColumnNumber);
+                        itemImport = ValidateCell(cellHeader.Value.ToString(), cell, itemImport);
 
                     });
 

@@ -11,6 +11,7 @@ namespace ImportDataConsole.Excel.Entities
         public ImportExcel()
         {
             Item = new TItem();
+            IsValid = true;
         }
 
         public bool IsValid { get; set; }
