@@ -39,13 +39,11 @@ namespace ImportDataConsole.Excel
             //GENERAR ENCABEZADO
             var col = 1;
             var row = 1;
-            if (data.Header == null) return worksheet; //ToDo: No solo verificar header
+
             //
             //GENERAR DETALLE
-            if (!data.Detaills.Any()) return worksheet;
-
-            col = worksheet.LastColumnUsed().ColumnNumber() + 1;
-            row = worksheet.LastRowUsed().RowNumber() + 1;
+            col = data.Header == null ? 1 : worksheet.LastColumnUsed().ColumnNumber() + 1;
+            row = data.Header == null ? 1 : worksheet.LastRowUsed().RowNumber() + 1;
 
             var first = data.Detaills.FirstOrDefault();
             var detProps = GetColumnList(first?.GetType());
