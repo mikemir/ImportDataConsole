@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using ImportDataConsole.Excel.Attributes;
 using ImportDataConsole.Excel.Entities;
 using ImportDataConsole.Excel.Extensions;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,13 +23,107 @@ namespace ImportDataConsole.Excel
             {
                 foreach (var hoja in data)
                 {
-
+                    workbook.AddWorksheet(hoja);
                 }
 
                 workbook.SaveAs(ms);
             }
 
             return ms.ToArray();
+        }
+
+        private static IXLWorksheet AddWorksheet<T>(this XLWorkbook workbook, ExportExcel<T> data) where T : class, new()
+        {
+
+            var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : data.WorkSheet + "(EMPTY)");
+            //GENERAR ENCABEZADO
+            var col = 1;
+            var row = 1;
+            if (data.Header == null) return worksheet; //ToDo: No solo verificar header
+            //
+            //GENERAR DETALLE
+            if (!data.Detaills.Any()) return worksheet;
+
+            col = worksheet.LastColumnUsed().ColumnNumber() + 1;
+            row = worksheet.LastRowUsed().RowNumber() + 1;
+
+            var first = data.Detaills.FirstOrDefault();
+            var detProps = GetColumnList(first?.GetType());
+
+            detProps.ForEach(p =>
+            {
+                var cell = worksheet.Cell(row, col++);
+                DrawHeaderCell(cell, p.Key);
+            });
+
+            data.Detaills.ForEach(item =>
+            {
+                row++;
+                col = 1;
+                detProps.ForEach(p =>
+                {
+                    var cell = worksheet.Cell(row, col++);
+                    DrawDataCell(cell, p.Value.GetValue(item), p.Value.GetCustomAttribute<ColumnNameAttribute>());
+                });
+            });
+
+            //
+            //GENERAR PIE
+            if (data.Footer == null) return worksheet;
+
+            col = worksheet.LastColumnUsed().ColumnNumber() + 1;
+            row = worksheet.LastRowUsed().RowNumber() + 1;
+
+            //
+
+            worksheet.Columns().AdjustToContents();
+
+            return worksheet;
+        }
+
+        private static Dictionary<string, PropertyInfo> GetColumnList(Type genericType, params string[] visibleColummns)
+        {
+            if (genericType == null)
+                throw new ArgumentNullException(nameof(genericType));
+
+            var columnList = genericType.GetProperties()
+                .Where(prop => prop.GetAttribute<ColumnNameAttribute>() != null && visibleColummns == null ||
+                               prop.GetAttribute<ColumnNameAttribute>() != null && visibleColummns.Contains(prop.Name))
+                .Select(prop =>
+                    new
+                    {
+                        Attribute = prop.GetCustomAttribute<ColumnNameAttribute>(),
+                        PropertyInfo = prop
+                    }
+                )
+                .OrderBy(prop => prop.Attribute.Order)
+                .ToDictionary(item => item.Attribute.Name, item => item.PropertyInfo);
+
+            return columnList;
+        }
+
+        private static void DrawHeaderCell(IXLCell cell, object value)
+        {
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontSize = 9;
+            cell.Style.Font.FontName = "Arial";
+            cell.Style.Fill.BackgroundColor = XLColor.Gainsboro;
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            cell.SetValue(value);
+        }
+
+        private static void DrawDataCell(IXLCell cell, object value, ColumnNameAttribute attribute)
+        {
+            cell.Style.Border.OutsideBorder = attribute.Border ? XLBorderStyleValues.Thin : XLBorderStyleValues.None;
+            if (attribute.NumberFormat != null) cell.Style.NumberFormat.SetFormat(attribute.NumberFormat);
+            if (attribute.DateFormat != null) cell.Style.DateFormat.SetFormat(attribute.DateFormat);
+            //if (attribute.Flag) cell.Style.Fill.SetBackgroundColor(XLColor.Yellow);
+            cell.Style.Font.FontName = "Arial";
+            cell.Style.Font.FontSize = 9;
+
+            cell.Value = value;
         }
 
         private static ImportExcel<T> ValidateCell<T>(string cellHeader, IXLCell cell, ImportExcel<T> importContent) where T : class, new()

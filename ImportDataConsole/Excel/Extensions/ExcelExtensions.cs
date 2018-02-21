@@ -28,8 +28,8 @@ namespace ImportDataConsole.Excel.Extensions
         {
             var result = item.GetType()
                 .GetProperties()
-                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ColumnName)))
-                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ColumnName) as ColumnName })
+                .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ColumnNameAttribute)))
+                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ColumnNameAttribute) as ColumnNameAttribute })
                 .SingleOrDefault(col => col.Attr.Name == name);
 
             return result?.Prop.Name;

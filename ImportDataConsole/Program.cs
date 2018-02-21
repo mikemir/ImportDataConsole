@@ -3,6 +3,7 @@ using ImportDataConsole.Excel.Attributes;
 using ImportDataConsole.Excel.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,11 +23,14 @@ namespace ImportDataConsole
     {
         static void Main(string[] args)
         {
+            var watch = new Stopwatch();
             var arrayBytes = File.ReadAllBytes("C:/ImportExcel/test.xlsx");
-            var test = new Test { Id = 1, Nombre = "Michael " };
-            var prop = test.GetPropertyInfo(item => item.Id).GetAttribute<ColumnName>();
 
+            watch.Start();
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
+            watch.Stop();
+
+            Console.WriteLine($"Tiempo: {watch.ElapsedMilliseconds}");
         }
     }
 }

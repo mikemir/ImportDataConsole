@@ -10,12 +10,12 @@ namespace ImportDataConsole.Excel.Entities
     {
         public ExportExcel()
         {
-            Data = new HashSet<TData>();
+            Detaills = new HashSet<TData>();
         }
 
         public string WorkSheet { get; set; }
         public object Header { get; set; }
         public object Footer { get; set; }
-        public IEnumerable<TData> Data { get; set; }
+        public IEnumerable<TData> Detaills { get; set; }
     }
 }

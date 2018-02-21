@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace ImportDataConsole.Excel.Attributes
 {
-    public class ColumnName : Attribute
+    public class ColumnNameAttribute : Attribute
     {
         public int Order { get; set; }
         public string Name { get; set; }
         public bool Border { get; set; }
         public string NumberFormat { get; set; }
         public string DateFormat { get; set; }
-
-        public bool Flag { get; set; }
     }
 }
