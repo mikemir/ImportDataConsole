@@ -117,7 +117,7 @@ namespace ImportDataConsole.Excel
         #region IMPORT
         private static ImportExcel<T> ValidateCell<T>(string cellHeader, IXLCell cell, ImportExcel<T> importContent) where T : class, new()
         {
-            var valid = true;
+            var cellValid = true;
             var propName = importContent.Item.GetPropertyNameByColumnAttr(cellHeader);
 
             if (propName != null)
@@ -130,13 +130,13 @@ namespace ImportDataConsole.Excel
                     {
                         importContent.ValidationMessage = importContent.ValidationMessage == null ? val.ErrorMessage
                                                             : $"{importContent.ValidationMessage}, {val.ErrorMessage}";
-                        valid = false;
+                        cellValid = false;
                     }
                 });
 
-                importContent.IsValid = importContent.IsValid && valid;
+                importContent.IsValid = importContent.IsValid && cellValid;
 
-                if (importContent.IsValid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
+                if (cellValid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
             }
 
             return importContent;

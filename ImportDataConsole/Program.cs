@@ -59,7 +59,8 @@ namespace ImportDataConsole
             watch.Reset();
 
             watch.Start();
-            var arrayBytes = File.ReadAllBytes(excelPath);
+            //var arrayBytes = File.ReadAllBytes(excelPath);
+            var arrayBytes = File.ReadAllBytes("C:/Excel/test2.xlsx");
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
             watch.Stop();
 
