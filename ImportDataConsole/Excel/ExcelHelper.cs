@@ -144,7 +144,9 @@ namespace ImportDataConsole.Excel
                     }
                     else
                     {
-                        importContent.ValidationMessage = val.ErrorMessage;
+                        importContent.ValidationMessage = importContent.ValidationMessage == null
+                                                            ? val.ErrorMessage
+                                                            : $"{importContent.ValidationMessage}, {val.ErrorMessage}";
                         valid = false;
                     }
                 });

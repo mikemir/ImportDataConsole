@@ -16,7 +16,7 @@ namespace ImportDataConsole.Utils.Attributes
 
             if (string.IsNullOrEmpty(cell.Value.ToString()))
             {
-                ErrorMessage = $"El campo \"{columName}\" es obligario, error en celda: [{cell.Address.ColumnLetter}{cell.Address.RowNumber}]";
+                ErrorMessage = $"El campo \"{columName}\" es obligatorio (error en celda [{cell.Address.ColumnLetter}{cell.Address.RowNumber}])";
                 valid = false;
             }
 

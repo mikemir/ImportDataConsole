@@ -15,10 +15,10 @@ namespace ImportDataConsole
     public class Test
     {
         [ExportDisplay("IDENTIFICADOR")]
-        [ImportDisplay("IDENTIFICADOR")]
+        [ImportDisplay("IDENTIFICADOR"), ColumnRequired]
         public int Id { get; set; }
         [ExportDisplay("VALOR")]
-        [ImportDisplay("VALOR"), ColumnRequired()]
+        [ImportDisplay("VALOR"), ColumnRequired]
         public string Nombre { get; set; }
     }
 
@@ -31,6 +31,7 @@ namespace ImportDataConsole
 
             watch.Start();
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
+            var resultErrorsExcel = resultExcel.Where(item => !item.IsValid).ToList();
             watch.Stop();
 
             Console.WriteLine($"Tiempo: {watch.ElapsedMilliseconds}");
