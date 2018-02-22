@@ -11,6 +11,13 @@ namespace ImportDataConsole.Excel.Entities
         public ExportExcel()
         {
             Detaills = new HashSet<TData>();
+            WorkSheet = "Hoja";
+        }
+
+        public ExportExcel(IEnumerable<TData> data)
+        {
+            Detaills = data;
+            WorkSheet = "Hoja";
         }
 
         public string WorkSheet { get; set; }

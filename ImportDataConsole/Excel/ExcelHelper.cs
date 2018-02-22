@@ -35,7 +35,6 @@ namespace ImportDataConsole.Excel
 
         private static IXLWorksheet AddWorksheet<T>(this XLWorkbook workbook, ExportExcel<T> data) where T : class, new()
         {
-
             var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : data.WorkSheet + "(EMPTY)");
             //GENERAR ENCABEZADO
             var col = 1;
@@ -47,7 +46,7 @@ namespace ImportDataConsole.Excel
             row = data.Header == null ? 1 : worksheet.LastRowUsed().RowNumber() + 1;
 
             var first = data.Detaills.FirstOrDefault();
-            var detProps = GetColumnList(first?.GetType());
+            var detProps = GetColumnList(first?.GetType(), null);
 
             detProps.ForEach(p =>
             {
