@@ -20,6 +20,10 @@ namespace ImportDataConsole
         [ExportDisplay("VALOR")]
         [ImportDisplay("VALOR"), ColumnRequired]
         public string Nombre { get; set; }
+
+        [ExportDisplay("FECHA")]
+        [ImportDisplay("FECHA"), ColumnRequired, DateValid]
+        public DateTime Fecha { get; set; }
     }
 
     class Program

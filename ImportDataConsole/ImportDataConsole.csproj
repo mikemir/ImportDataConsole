@@ -61,6 +61,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Attributes\ColumnRequiredAttribute.cs" />
+    <Compile Include="Utils\Attributes\DateValidAttribute.cs" />
+    <Compile Include="Utils\Attributes\RegularExpressionValidAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

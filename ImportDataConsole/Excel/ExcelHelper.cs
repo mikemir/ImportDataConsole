@@ -138,18 +138,15 @@ namespace ImportDataConsole.Excel
                 var validations = prop.GetAttributes<ImportValidationAttribute>();
 
                 validations.ForEach(val => {
-                    if (val.IsValid(cell, cellHeader))
+                    if (!val.IsValid(cell, cellHeader))
                     {
-                        prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
-                    }
-                    else
-                    {
-                        importContent.ValidationMessage = importContent.ValidationMessage == null
-                                                            ? val.ErrorMessage
+                        importContent.ValidationMessage = importContent.ValidationMessage == null ? val.ErrorMessage
                                                             : $"{importContent.ValidationMessage}, {val.ErrorMessage}";
                         valid = false;
                     }
                 });
+
+                if(valid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
             }
 
             importContent.IsValid = importContent.IsValid && valid;

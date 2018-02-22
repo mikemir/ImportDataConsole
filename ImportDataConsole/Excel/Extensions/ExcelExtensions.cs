@@ -18,7 +18,7 @@ namespace ImportDataConsole.Excel.Extensions
 
         public static IEnumerable<T> GetAttributes<T>(this MemberInfo obj) where T : class
         {
-            return obj.GetCustomAttributes(true).Where(param => param is T).Select(item => item as T).ToList();
+            return obj.GetCustomAttributes(true).OfType<T>().Select(item => item).ToList();
         }
 
         public static MemberInfo GetPropertyInfo<T>(this T obj, Expression<Func<T, object>> expression)
@@ -34,8 +34,8 @@ namespace ImportDataConsole.Excel.Extensions
             var result = item.GetType()
                 .GetProperties()
                 .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ImportDisplayAttribute)))
-                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).SingleOrDefault(attr => attr is ImportDisplayAttribute) as ImportDisplayAttribute })
-                .SingleOrDefault(col => col.Attr.ColumnName == columnName);
+                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).FirstOrDefault(attr => attr is ImportDisplayAttribute) as ImportDisplayAttribute })
+                .FirstOrDefault(col => col.Attr.ColumnName == columnName);
 
             return result?.Prop.Name;
         }
