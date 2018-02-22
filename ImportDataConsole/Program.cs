@@ -48,9 +48,9 @@ namespace ImportDataConsole
 
         static void Main(string[] args)
         {
+            var watch = new Stopwatch();
             var excelPath = "C:/Excel/test.xlsx";
 
-            var watch = new Stopwatch();
             watch.Start();
             var bytes = ExcelHelper.Export(new ExportExcel<Test>[] { new ExportExcel<Test>(GenerateData()) });
             File.WriteAllBytes(excelPath, bytes);

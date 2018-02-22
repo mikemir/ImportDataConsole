@@ -20,7 +20,7 @@ namespace ImportDataConsole.Excel.Extensions
         {
             return obj.GetCustomAttributes(true).OfType<T>().Select(item => item).ToList();
         }
-
+    
         public static MemberInfo GetPropertyInfo<T>(this T obj, Expression<Func<T, object>> expression)
         {
             var uniExpresion = expression.Body as UnaryExpression;

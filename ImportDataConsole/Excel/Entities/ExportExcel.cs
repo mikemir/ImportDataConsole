@@ -14,9 +14,9 @@ namespace ImportDataConsole.Excel.Entities
             WorkSheet = "Hoja";
         }
 
-        public ExportExcel(IEnumerable<TData> data)
+        public ExportExcel(IEnumerable<TData> detaills)
         {
-            Detaills = data;
+            Detaills = detaills;
             WorkSheet = "Hoja";
         }
 

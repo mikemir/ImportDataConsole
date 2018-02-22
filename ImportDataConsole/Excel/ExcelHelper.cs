@@ -16,15 +16,18 @@ namespace ImportDataConsole.Excel
     public static class ExcelHelper
     {
         #region EXPORT
-        public static byte[] Export<T>(IEnumerable<ExportExcel<T>> data) where T : class, new()
+        public static byte[] Export<T>(IEnumerable<ExportExcel<T>> exportData) where T : class, new()
         {
             var ms = new MemoryStream();
 
             using (var workbook = new XLWorkbook())
             {
-                foreach (var hoja in data)
+                foreach (var data in exportData)
                 {
-                    workbook.AddWorksheet(hoja);
+                    var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : $"{data.WorkSheet} (EMPTY)");
+                    //ToDo: Crear Encabezao
+                    worksheet.AddDetails(data.Detaills);
+                    //ToDo: Crear Pie
                 }
 
                 workbook.SaveAs(ms);
@@ -33,48 +36,34 @@ namespace ImportDataConsole.Excel
             return ms.ToArray();
         }
 
-        private static IXLWorksheet AddWorksheet<T>(this XLWorkbook workbook, ExportExcel<T> data) where T : class, new()
+        private static IXLWorksheet AddHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumber = 1, int rowNumber = 1)
         {
-            var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : data.WorkSheet + "(EMPTY)");
-            //GENERAR ENCABEZADO
-            var col = 1;
-            var row = 1;
+            return worksheet;
+        }
 
-            //
-            //GENERAR DETALLE
-            col = data.Header == null ? 1 : worksheet.LastColumnUsed().ColumnNumber() + 1;
-            row = data.Header == null ? 1 : worksheet.LastRowUsed().RowNumber() + 1;
+        private static IXLWorksheet AddDetails<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumber = 1, int rowNumber = 1) where T : class, new()
+        {
+            var first = data.FirstOrDefault();
+            var dataProps = GetColumnList(first?.GetType(), null);
 
-            var first = data.Detaills.FirstOrDefault();
-            var detProps = GetColumnList(first?.GetType(), null);
-
-            detProps.ForEach(p =>
+            dataProps.ForEach(p =>
             {
-                var cell = worksheet.Cell(row, col++);
+                var cell = worksheet.Cell(rowNumber, colNumber++);
                 DrawHeaderCell(cell, p.Key);
             });
 
-            data.Detaills.ForEach(item =>
+            data.ForEach(item =>
             {
-                row++;
-                col = 1;
-                detProps.ForEach(p =>
+                rowNumber++;
+                colNumber = 1;
+                dataProps.ForEach(p =>
                 {
-                    var cell = worksheet.Cell(row, col++);
+                    var cell = worksheet.Cell(rowNumber, colNumber++);
                     DrawDataCell(cell, p.Value.GetValue(item), p.Value.GetCustomAttribute<ExportDisplayAttribute>());
                 });
             });
 
-            //
-            //GENERAR PIE
-            if (data.Footer == null) return worksheet;
-
-            col = worksheet.LastColumnUsed().ColumnNumber() + 1;
-            row = worksheet.LastRowUsed().RowNumber() + 1;
-
-            //
-
-            worksheet.Columns().AdjustToContents();
+            worksheet.Columns(colNumber, dataProps.Count).AdjustToContents();
 
             return worksheet;
         }

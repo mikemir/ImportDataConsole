@@ -10,6 +10,9 @@ namespace ImportDataConsole.Excel.Attributes
     {
         public ImportDisplayAttribute(string name)
         {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+
             ColumnName = name;
         }
         public string ColumnName { get; set; }
