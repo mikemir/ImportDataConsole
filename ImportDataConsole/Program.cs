@@ -61,10 +61,13 @@ namespace ImportDataConsole
             watch.Start();
             var arrayBytes = File.ReadAllBytes(excelPath);
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
-            var resultErrorsExcel = resultExcel.Where(item => !item.IsValid).ToList();
             watch.Stop();
 
+            var resultValidExcel = resultExcel.Where(item => item.IsValid).ToList();
+            var resultNotValidsExcel = resultExcel.Where(item => !item.IsValid).ToList();
+
             Console.WriteLine($"Tiempo: {watch.Elapsed}");
+            Console.Read();
         }
     }
 }
