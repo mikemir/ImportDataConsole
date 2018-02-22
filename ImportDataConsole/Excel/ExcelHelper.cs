@@ -146,10 +146,10 @@ namespace ImportDataConsole.Excel
                     }
                 });
 
-                if(valid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
-            }
+                importContent.IsValid = importContent.IsValid && valid;
 
-            importContent.IsValid = importContent.IsValid && valid;
+                if (importContent.IsValid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
+            }
 
             return importContent;
         }
