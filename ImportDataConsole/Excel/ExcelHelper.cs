@@ -168,7 +168,7 @@ namespace ImportDataConsole.Excel
                 .ForEach(row => {
                     var itemImport = new ImportExcel<T>();
 
-                    row.Cells(1, row.LastCellUsed().Address.ColumnNumber)
+                    row.Cells(1, rowHeader.LastCellUsed().Address.ColumnNumber)
                     .ForEach(cell => {
 
                         var cellHeader = workSheet.Cell(numRowHeader, cell.Address.ColumnNumber);
