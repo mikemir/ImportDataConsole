@@ -52,7 +52,7 @@ namespace ImportDataConsole
             var excelPath = "C:/Excel/test.xlsx";
 
             watch.Start();
-            var bytes = ExcelHelper.Export(new ExportExcel<Test>[] { new ExportExcel<Test>(GenerateData()) });
+            var bytes = ExcelHelper.Export(new ExportExcel<Test>[] { new ExportExcel<Test>("DATA IMPORT", GenerateData()) });
             File.WriteAllBytes(excelPath, bytes);
             watch.Stop();
             Console.WriteLine($"Tiempo: {watch.Elapsed}");
