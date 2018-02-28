@@ -36,13 +36,16 @@ namespace ImportDataConsole.Excel
             return ms.ToArray();
         }
 
-        private static IXLWorksheet AddHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumber = 1, int rowNumber = 1)
+        private static IXLWorksheet AddHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumberStart = 1, int rowNumberStart = 1)
         {
             return worksheet;
         }
 
-        private static IXLWorksheet AddDetails<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumber = 1, int rowNumber = 1) where T : class, new()
+        private static IXLWorksheet AddDetails<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumberStart = 1, int rowNumberStart = 1) where T : class, new()
         {
+            var colNumber = colNumberStart;
+            var rowNumber = rowNumberStart;
+
             var first = data.FirstOrDefault();
             var dataProps = GetColumnList(first?.GetType(), null);
 
@@ -63,7 +66,7 @@ namespace ImportDataConsole.Excel
                 });
             });
 
-            worksheet.Columns(colNumber, dataProps.Count).AdjustToContents();
+            worksheet.Columns(colNumberStart, dataProps.Count).AdjustToContents();
 
             return worksheet;
         }
@@ -114,7 +117,7 @@ namespace ImportDataConsole.Excel
         #region IMPORT
         private static ImportExcel<T> ValidateCell<T>(string cellHeader, IXLCell cell, ImportExcel<T> importContent) where T : class, new()
         {
-            var valid = true;
+            var cellValid = true;
             var propName = importContent.Item.GetPropertyNameByColumnAttr(cellHeader);
 
             if (propName != null)
@@ -127,13 +130,13 @@ namespace ImportDataConsole.Excel
                     {
                         importContent.ValidationMessage = importContent.ValidationMessage == null ? val.ErrorMessage
                                                             : $"{importContent.ValidationMessage}, {val.ErrorMessage}";
-                        valid = false;
+                        cellValid = false;
                     }
                 });
 
-                importContent.IsValid = importContent.IsValid && valid;
+                importContent.IsValid = importContent.IsValid && cellValid;
 
-                if (importContent.IsValid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
+                if (cellValid) prop?.SetValue(importContent.Item, Convert.ChangeType(cell.Value, prop.PropertyType));
             }
 
             return importContent;

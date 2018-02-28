@@ -20,6 +20,12 @@ namespace ImportDataConsole.Excel.Entities
             WorkSheet = "Hoja";
         }
 
+        public ExportExcel(string worksheetName, IEnumerable<TData> detaills)
+        {
+            WorkSheet = worksheetName;
+            Detaills = detaills;
+        }
+
         public string WorkSheet { get; set; }
         public object Header { get; set; }
         public object Footer { get; set; }
