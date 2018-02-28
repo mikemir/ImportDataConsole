@@ -74,17 +74,14 @@ namespace ImportDataConsole.Excel
                 throw new ArgumentNullException(nameof(genericType));
 
             var columnList = genericType.GetProperties()
-                .Where(prop => prop.GetAttribute<ExportDisplayAttribute>() != null && visibleColummns == null ||
-                               prop.GetAttribute<ExportDisplayAttribute>() != null && visibleColummns.Contains(prop.Name))
-                .Select(prop =>
-                    new
-                    {
+                .Where(prop => prop.GetCustomAttribute<ExportDisplayAttribute>() != null && visibleColummns == null ||
+                               prop.GetCustomAttribute<ExportDisplayAttribute>() != null && visibleColummns.Contains(prop.Name))
+                .Select(prop => new {
                         Attribute = prop.GetCustomAttribute<ExportDisplayAttribute>(),
                         PropertyInfo = prop
-                    }
-                )
-                .OrderBy(prop => prop.Attribute.Order)
-                .ToDictionary(item => item.Attribute.Name, item => item.PropertyInfo);
+                    })
+                    .OrderBy(prop => prop.Attribute.Order)
+                    .ToDictionary(item => item.Attribute.Name, item => item.PropertyInfo);
 
             return columnList;
         }
@@ -123,7 +120,7 @@ namespace ImportDataConsole.Excel
             if (propName != null)
             {
                 var prop = typeof(T).GetProperty(propName);
-                var validations = prop.GetAttributes<ImportValidationAttribute>();
+                var validations = prop.GetCustomAttributes<ImportValidationAttribute>();
 
                 validations.ForEach(val => {
                     if (!val.IsValid(cell, cellHeader))

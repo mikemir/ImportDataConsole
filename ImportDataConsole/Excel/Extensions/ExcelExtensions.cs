@@ -11,30 +11,20 @@ namespace ImportDataConsole.Excel.Extensions
 {
     public static class ExcelExtensions
     {
-        public static T GetAttribute<T>(this MemberInfo obj) where T : class
-        {
-            return obj.GetCustomAttributes(true).FirstOrDefault(param => param is T) as T;
-        }
-
-        public static IEnumerable<T> GetAttributes<T>(this MemberInfo obj) where T : class
-        {
-            return obj.GetCustomAttributes(true).OfType<T>().Select(item => item).ToList();
-        }
-    
         public static MemberInfo GetPropertyInfo<T>(this T obj, Expression<Func<T, object>> expression)
         {
             var uniExpresion = expression.Body as UnaryExpression;
             var memberExpresion = uniExpresion?.Operand as MemberExpression;
 
-            return memberExpresion != null ? obj.GetType().GetProperty(memberExpresion.Member.Name) : null;
+            return memberExpresion == null ? null : obj.GetType().GetProperty(memberExpresion.Member.Name);
         }
 
-        public static string GetPropertyNameByColumnAttr(this object item, string columnName)
+        public static string GetPropertyNameByColumnAttr(this object obj, string columnName)
         {
-            var result = item.GetType()
+            var result = obj.GetType()
                 .GetProperties()
                 .Where(prop => prop.GetCustomAttributesData().Any(attr => attr.AttributeType == typeof(ImportDisplayAttribute)))
-                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttributes(true).FirstOrDefault(attr => attr is ImportDisplayAttribute) as ImportDisplayAttribute })
+                .Select(prop => new { Prop = prop, Attr = prop.GetCustomAttribute<ImportDisplayAttribute>() })
                 .FirstOrDefault(col => col.Attr.ColumnName == columnName);
 
             return result?.Prop.Name;
