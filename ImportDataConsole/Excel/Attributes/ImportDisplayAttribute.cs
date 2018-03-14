@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImportDataConsole.Excel.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class ImportDisplayAttribute : Attribute
     {
         public ImportDisplayAttribute(string name)

@@ -8,6 +8,7 @@ using ClosedXML.Excel;
 
 namespace ImportDataConsole.Excel.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public abstract class ImportValidationAttribute : Attribute
     {
         public string ErrorMessage { get; set; }
