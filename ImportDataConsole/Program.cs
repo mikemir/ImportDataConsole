@@ -16,8 +16,9 @@ namespace ImportDataConsole
     public class Test
     {
         [ExportDisplay("IDENTIFICADOR")]
-        [ImportDisplay("IDENTIFICADOR"), ColumnRequired]
+        [ImportDisplay("IDENTIFICADOR")]
         public int Id { get; set; }
+
         [ExportDisplay("VALOR")]
         [ImportDisplay("VALOR"), ColumnRequired]
         public string Nombre { get; set; }
