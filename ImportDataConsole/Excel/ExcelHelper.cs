@@ -126,10 +126,9 @@ namespace ImportDataConsole.Excel
                     {
                         Attribute = prop.GetCustomAttribute<ExportDisplayAttribute>(),
                         PropertyInfo = prop
-                    }
-                )
-                .OrderBy(prop => prop.Attribute.Order)
-                .ToDictionary(item => item.Attribute.Name, item => item.PropertyInfo);
+                    })
+                    .OrderBy(prop => prop.Attribute.Order)
+                    .ToDictionary(item => item.Attribute.Name, item => item.PropertyInfo);
 
             return columnList;
         }
