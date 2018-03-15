@@ -20,39 +20,39 @@ namespace ImportDataConsole.Excel
             bool result = true;
             message = string.Empty;
 
-            //var workbook = new XLWorkbook(new MemoryStream(data));
-            //var worksheet = workbook.Worksheets.FirstOrDefault();
+            var workbook = new XLWorkbook(new MemoryStream(data));
+            var worksheet = workbook.Worksheets.FirstOrDefault();
 
-            //if (worksheet.IsEmpty())
-            //{
-            //    message = "Excel esta vacío";
-            //    return false;
-            //}
+            if (worksheet.IsEmpty())
+            {
+                message = "Excel esta vacío";
+                return false;
+            }
 
-            //var firstCell = worksheet.FirstCellUsed();
-            //var lastColumn = worksheet.LastColumnUsed();
-            //var range = worksheet.Range(firstCell.Address, lastColumn.LastCellUsed().Address);
+            var firstCell = worksheet.FirstCellUsed();
+            var lastColumn = worksheet.LastColumnUsed();
+            var range = worksheet.Range(firstCell.Address, lastColumn.LastCellUsed().Address);
 
-            //foreach (var column in columns)
-            //{
-            //    var cellColumn = range.Search(column, CompareOptions.IgnoreCase, false).FirstOrDefault();
+            foreach (var column in columns)
+            {
+                var cellColumn = range.Search(column, CompareOptions.IgnoreCase, false).FirstOrDefault();
 
-            //    if (cellColumn != null && column.Equals(cellColumn.Value.ToString()))
-            //    {
-            //        var cellData = worksheet.Cell(cellColumn.Address.RowNumber + 1, cellColumn.Address.ColumnNumber);
-            //        if (cellData.IsEmpty())
-            //        {
-            //            result = false;
-            //            message = $"El archivo no tiene la lista de {cellColumn.Value} a generar";
-            //        }
-            //    }
-            //    else
-            //    {
-            //        result = false;
-            //        message = $"El archivo no tiene la columna con encabezado  \"{column}\"";
-            //    }
+                if (cellColumn != null && column.Equals(cellColumn.Value.ToString()))
+                {
+                    var cellData = worksheet.Cell(cellColumn.Address.RowNumber + 1, cellColumn.Address.ColumnNumber);
+                    if (cellData.IsEmpty())
+                    {
+                        result = false;
+                        message = $"El archivo no tiene la lista de {cellColumn.Value} a generar";
+                    }
+                }
+                else
+                {
+                    result = false;
+                    message = $"El archivo no tiene la columna con encabezado  \"{column}\"";
+                }
 
-            //}
+            }
 
             return result;
         }
