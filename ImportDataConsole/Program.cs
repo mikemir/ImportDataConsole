@@ -60,13 +60,30 @@ namespace ImportDataConsole
             watch.Reset();
 
             watch.Start();
-            //var arrayBytes = File.ReadAllBytes(excelPath);
-            var arrayBytes = File.ReadAllBytes("C:/Excel/test2.xlsx");
+            var arrayBytes = File.ReadAllBytes(excelPath);
+            //var arrayBytes = File.ReadAllBytes("C:/Excel/test2.xlsx");
             var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
             watch.Stop();
 
-            var resultValidExcel = resultExcel.Where(item => item.IsValid).ToList();
-            var resultNotValidsExcel = resultExcel.Where(item => !item.IsValid).ToList();
+            try
+            {
+                var templatetPath = "C:/Excel/test_template.xlsx";
+                var fileTemplate = File.ReadAllBytes(templatetPath);
+                var paramst = new[] {
+                    new TemplateData("nombre", "Michael Emir"),
+                    new TemplateData("fecha", "12/08/1992"),
+                    new TemplateData("correlativo", "CE-3450P"),
+                    new TemplateData("ncuenta", "1209-9021-312"),
+                    new TemplateData("valor", "1,900.75"),
+                    new TemplateData("table", GenerateData())
+                };
+                var resultBytes = ExcelHelper.ExportWithTemplate(new List<ExportTemplateExcel> { new ExportTemplateExcel("TEST", paramst) }, fileTemplate);
+                File.WriteAllBytes("C:/Excel/result_template.xlsx", resultBytes);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
 
             Console.WriteLine($"Tiempo: {watch.Elapsed}");
             Console.Read();

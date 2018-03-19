@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using ImportDataConsole.Excel.Attributes;
 using ImportDataConsole.Excel.Entities;
+using ImportDataConsole.Excel.Exceptions;
 using ImportDataConsole.Excel.Extensions;
 using System;
 using System.Collections.Generic;
@@ -64,13 +65,12 @@ namespace ImportDataConsole.Excel
 
             using (var workbook = new XLWorkbook())
             {
-                foreach (var data in exportData)
-                {
+                exportData.ForEach(data => {
                     var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : $"{data.WorkSheet} (EMPTY)");
                     //ToDo: Crear Encabezao
-                    worksheet.AddDetails(data.Detaills);
+                    worksheet.DrawDataTable(data.Detaills);
                     //ToDo: Crear Pie
-                }
+                });
 
                 workbook.SaveAs(ms);
             }
@@ -78,12 +78,47 @@ namespace ImportDataConsole.Excel
             return ms.ToArray();
         }
 
-        private static IXLWorksheet AddHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumberStart = 1, int rowNumberStart = 1)
+        public static byte[] ExportWithTemplate(IEnumerable<ExportTemplateExcel> exportData, byte[] excelTemplate)
+        {
+            var ms = new MemoryStream();
+
+            using (var workbook = new XLWorkbook(new MemoryStream(excelTemplate)))
+            {
+                workbook.Worksheets.ForEach(worksheet => {
+                    var data = exportData.SingleOrDefault(export => export.WorkSheet.Equals(worksheet.Name));
+                    if(data != null)
+                    {
+                        data.Detaills.ForEach(item => {
+                            var startCell = worksheet.CellsUsed().SingleOrDefault(cell => cell.Value.ToString().Equals("{#" + item.SearchKey + "#}"));
+                            if (item.IsTable && startCell != null)
+                            {
+                                var address = startCell.Address;
+                                worksheet.DrawDataTable(item.GetDataTable(), address.ColumnNumber, address.RowNumber);
+                            }
+                            else if(startCell != null)
+                            {
+                                startCell.Value = item.Value;
+                            }
+                        });
+                    }
+                    else
+                    {
+                        throw new NotFoundWorksheetExportException(worksheet.Name);
+                    }
+                });
+
+                workbook.SaveAs(ms);
+            }
+
+            return ms.ToArray();
+        }
+
+        private static IXLWorksheet DrawHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumberStart = 1, int rowNumberStart = 1)
         {
             return worksheet;
         }
 
-        private static IXLWorksheet AddDetails<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumberStart = 1, int rowNumberStart = 1) where T : class, new()
+        private static IXLWorksheet DrawDataTable<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumberStart = 1, int rowNumberStart = 1) where T : class, new()
         {
             var colNumber = colNumberStart;
             var rowNumber = rowNumberStart;

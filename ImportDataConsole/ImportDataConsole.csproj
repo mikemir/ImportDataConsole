@@ -67,8 +67,10 @@
     <Compile Include="Excel\Attributes\ImportDisplayAttribute.cs" />
     <Compile Include="Excel\Attributes\ImportValidationAttribute.cs" />
     <Compile Include="Excel\Entities\ExportExcel.cs" />
+    <Compile Include="Excel\Entities\ExportTemplateExcel.cs" />
     <Compile Include="Excel\Entities\ImportExcel.cs" />
     <Compile Include="Excel\ExcelHelper.cs" />
+    <Compile Include="Excel\Exceptions\NotFoundWorksheetExportException.cs" />
     <Compile Include="Excel\Extensions\ExcelExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
