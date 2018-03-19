@@ -23,7 +23,7 @@ namespace ImportDataConsole
         [ImportDisplay("VALOR"), ColumnRequired]
         public string Nombre { get; set; }
 
-        [ExportDisplay("FECHA")]
+        [ExportDisplay("FECHA", DateFormat = "dd/MM/yyyy")]
         [ImportDisplay("FECHA"), DateValid, ColumnRequired]
         public DateTime Fecha { get; set; }
     }

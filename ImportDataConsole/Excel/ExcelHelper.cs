@@ -67,9 +67,9 @@ namespace ImportDataConsole.Excel
             {
                 exportData.ForEach(data => {
                     var worksheet = workbook.AddWorksheet(data.Detaills.Any() ? data.WorkSheet : $"{data.WorkSheet} (EMPTY)");
-                    //ToDo: Crear Encabezao
-                    worksheet.DrawDataTable(data.Detaills);
-                    //ToDo: Crear Pie
+                    var lastRowHeader = worksheet.DrawHeaderOrFooter<int>(0); //ToDo: Crear Encabezao
+                    var lastRowDataTable = worksheet.DrawDataTable(data.Detaills, lastRowHeader);
+                    var lastRowFooter = worksheet.DrawHeaderOrFooter<int>(0, lastRowDataTable);//ToDo: Crear Pie
                 });
 
                 workbook.SaveAs(ms);
@@ -94,7 +94,7 @@ namespace ImportDataConsole.Excel
                         if (item.IsTable && startCell != null)
                         {
                             var address = startCell.Address;
-                            worksheet.DrawDataTable(item.GetDataTable(), address.ColumnNumber, address.RowNumber);
+                            worksheet.DrawDataTable(item.GetDataTable(), address.RowNumber, address.ColumnNumber);
                         }
                         else if (startCell != null)
                         {
@@ -109,12 +109,12 @@ namespace ImportDataConsole.Excel
             return ms.ToArray();
         }
 
-        private static IXLWorksheet DrawHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int colNumberStart = 1, int rowNumberStart = 1)
+        private static int DrawHeaderOrFooter<T>(this IXLWorksheet worksheet, object data, int rowNumberStart = 1, int colNumberStart = 1)
         {
-            return worksheet;
+            return 1;
         }
 
-        private static IXLWorksheet DrawDataTable<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int colNumberStart = 1, int rowNumberStart = 1) where T : class, new()
+        private static int DrawDataTable<T>(this IXLWorksheet worksheet, IEnumerable<T> data, int rowNumberStart = 1, int colNumberStart = 1) where T : class, new()
         {
             var colNumber = colNumberStart;
             var rowNumber = rowNumberStart;
@@ -141,7 +141,7 @@ namespace ImportDataConsole.Excel
 
             worksheet.Columns(colNumberStart, dataProps.Count).AdjustToContents();
 
-            return worksheet;
+            return rowNumber;
         }
 
         private static Dictionary<string, PropertyInfo> GetColumnList(Type genericType, params string[] visibleColummns)
