@@ -86,25 +86,21 @@ namespace ImportDataConsole.Excel
             {
                 workbook.Worksheets.ForEach(worksheet => {
                     var data = exportData.SingleOrDefault(export => export.WorkSheet.Equals(worksheet.Name));
-                    if(data != null)
-                    {
-                        data.Detaills.ForEach(item => {
-                            var startCell = worksheet.CellsUsed().SingleOrDefault(cell => cell.Value.ToString().Equals("{#" + item.SearchKey + "#}"));
-                            if (item.IsTable && startCell != null)
-                            {
-                                var address = startCell.Address;
-                                worksheet.DrawDataTable(item.GetDataTable(), address.ColumnNumber, address.RowNumber);
-                            }
-                            else if(startCell != null)
-                            {
-                                startCell.Value = item.Value;
-                            }
-                        });
-                    }
-                    else
-                    {
+                    if (data == null)
                         throw new NotFoundWorksheetExportException(worksheet.Name);
-                    }
+
+                    data.Detaills.ForEach(item => {
+                        var startCell = worksheet.CellsUsed().SingleOrDefault(cell => cell.Value.ToString().Equals("{#" + item.SearchKey + "#}"));
+                        if (item.IsTable && startCell != null)
+                        {
+                            var address = startCell.Address;
+                            worksheet.DrawDataTable(item.GetDataTable(), address.ColumnNumber, address.RowNumber);
+                        }
+                        else if (startCell != null)
+                        {
+                            startCell.Value = item.Value;
+                        }
+                    });
                 });
 
                 workbook.SaveAs(ms);

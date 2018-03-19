@@ -12,12 +12,24 @@ namespace ImportDataConsole.Excel.Entities
 
         public TemplateData(string searchKey, string value)
         {
+            if (string.IsNullOrEmpty(searchKey))
+                throw new ArgumentNullException(nameof(searchKey));
+
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
             SearchKey = searchKey;
             Value = value;
         }
 
         public TemplateData(string searchKey, IEnumerable<object> value)
         {
+            if (string.IsNullOrEmpty(searchKey))
+                throw new ArgumentNullException(nameof(searchKey));
+
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
             SearchKey = searchKey;
             Value = value;
             _isTable = true;
@@ -25,7 +37,6 @@ namespace ImportDataConsole.Excel.Entities
 
         public string SearchKey { get; set; }
         public object Value { get; set; }
-
         public bool IsTable { get { return _isTable; } }
 
         public IEnumerable<object> GetDataTable()
@@ -41,7 +52,7 @@ namespace ImportDataConsole.Excel.Entities
             if (string.IsNullOrEmpty(worksheetName))
                 throw new ArgumentNullException(nameof(worksheetName));
 
-            if(detaills == null)
+            if (detaills == null)
                 throw new ArgumentNullException(nameof(detaills));
 
             WorkSheet = worksheetName;
