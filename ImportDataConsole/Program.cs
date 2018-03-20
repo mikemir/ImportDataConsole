@@ -53,7 +53,7 @@ namespace ImportDataConsole
             var excelPath = "C:/Excel/test.xlsx";
 
             watch.Start();
-            var bytes = ExcelHelper.Export(new ExportExcel<Test>[] { new ExportExcel<Test>("DATA IMPORT", GenerateData()) });
+            var bytes = ExcelWrapper.Export(new ExportExcel<Test>[] { new ExportExcel<Test>("DATA IMPORT", GenerateData()) });
             File.WriteAllBytes(excelPath, bytes);
             watch.Stop();
             Console.WriteLine($"Tiempo: {watch.Elapsed}");
@@ -62,7 +62,7 @@ namespace ImportDataConsole
             watch.Start();
             var arrayBytes = File.ReadAllBytes(excelPath);
             //var arrayBytes = File.ReadAllBytes("C:/Excel/test2.xlsx");
-            var resultExcel = ExcelHelper.Import<Test>(arrayBytes);
+            var resultExcel = ExcelWrapper.Import<Test>(arrayBytes);
             watch.Stop();
 
             try
@@ -77,7 +77,7 @@ namespace ImportDataConsole
                     new TemplateData("valor", "1,900.75"),
                     new TemplateData("table", GenerateData())
                 };
-                var resultBytes = ExcelHelper.ExportWithTemplate(new List<ExportTemplateExcel> { new ExportTemplateExcel("TEST", paramst) }, fileTemplate);
+                var resultBytes = ExcelWrapper.ExportWithTemplate(new List<ExportTemplateExcel> { new ExportTemplateExcel("TEST", paramst) }, fileTemplate);
                 File.WriteAllBytes("C:/Excel/result_template.xlsx", resultBytes);
             }
             catch (Exception ex)

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ImportDataConsole.Excel
 {
-    public static class ExcelHelper
+    public static class ExcelWrapper
     {
         public static bool ValidateExcel(byte[] data, IEnumerable<string> columns, out string message)
         {
